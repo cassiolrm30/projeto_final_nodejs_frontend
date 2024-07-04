@@ -49,6 +49,85 @@ function getNav()
 	$("nav").html(resultado);
 }
 
+function getNavOut()
+{
+	let resultado = "";
+	let v1 = "";
+	let v2 = "";
+	if (v_index)
+	{
+		v1 = "<a class='nav-link active' style='color:#FFFFFF;padding-top:13px;' href='#' onclick='doLogin();'><img src='imagens/icone_login.jpg' style='height:27.5px;width:26px;' /></a>";
+		v2 = "<li class='nav-item' style='width:37%;'></li>";
+	}
+	resultado += "<div class='container-fluid' style='background-color:#000000;width:100%;'>";
+	resultado += "	<button class='navbar-toggler' type='button' data-bs-toggle='collapse' data-bs-target='#navbarNav' aria-controls='navbarNav' aria-expanded='false' aria-label='Toggle navigation'>";
+	resultado += "		<span class='navbar-toggler-icon'></span>";
+	resultado += "	</button>";
+	resultado += "	<div class='collapse navbar-collapse' style='width:100%;' id='navbarNav'>";
+	resultado += "		<ul class='navbar-nav me-auto mb-2 mb-lg-0' style='width:1510px;'>";
+	resultado += "			<li class='nav-item' style='width:7%;'></li>";
+	resultado += "			<li class='nav-item' style='width:35%;text-align:center;font-weight:bold;padding-top:5px;'><div id='login'></div></li>";
+	resultado += "			<li class='nav-item' style='width:16%;text-align:center;'>";
+	resultado += "				<div class='nav-link active' style='color:#FFFFFF;font-size:20px;font-weight:bold;text-align:center;padding:10px 0px 10px 0px;'>Minha Estante</div>";
+	resultado += "			</li>";
+	resultado += "			{2}";
+	resultado += "			<li class='nav-item' style='width:5%;text-align:center;'>{1}</li>";
+	resultado += "		</ul>";
+	resultado += "	</div>";
+	resultado += "</div>";
+	
+	resultado = resultado.replace("{1}", v1);
+	resultado = resultado.replace("{2}", v2);
+	
+	$("nav").html(resultado);
+}
+
+function getNavIn()
+{
+	let resultado = "";
+	let v1 = "";
+	let v2 = "";
+	if (v_index)
+	{
+		v1 = "<a class='nav-link active' style='color:#FFFFFF;padding-top:13px;' href='#' onclick='doLogin();'><img src='imagens/icone_login.jpg' style='height:27.5px;width:26px;' /></a>";
+		v2 = "<li class='nav-item' style='width:37%;'></li>";
+	}
+	else
+	{
+		//debugger;
+		if (localStorage.getItem('token_usuario') != null)
+		{
+			v1 = "<a class='nav-link active' style='color:#FFFFFF;padding-top:13px;' aria-current='page' href='#' id='doLogout'><img src='imagens/icone_logoff.jpg' style='height:27.5px;width:26px;' /></a>";
+			v2 += "<li class='nav-item' style='width:11%;text-align:center;font-weight:bold;padding-top:11px;color:#FFFFFF;'></li>";
+			v2 += "<li class='nav-item' style='width:7%;text-align:center;font-weight:bold;padding-top:5px;color:#FFFFFF;'><a class='nav-link' style='color:#FFFFFF;' href='#' id='conteudos1'>CRUD's</a></li>";
+			v2 += "<li class='nav-item' style='width:1%;text-align:center;font-weight:bold;padding-top:11px;color:#FFFFFF;'>|</li>";
+			v2 += "<li class='nav-item' style='width:7%;text-align:center;font-weight:bold;padding-top:5px;color:#FFFFFF;'><a class='nav-link' style='color:#FFFFFF;' href='#' id='conteudos2'>Livros</a></li>";
+			v2 += "<li class='nav-item' style='width:11%;text-align:center;font-weight:bold;padding-top:11px;color:#FFFFFF;'></li>";
+		}
+	}
+	resultado += "<div class='container-fluid' style='background-color:#000000;width:100%;'>";
+	resultado += "	<button class='navbar-toggler' type='button' data-bs-toggle='collapse' data-bs-target='#navbarNav' aria-controls='navbarNav' aria-expanded='false' aria-label='Toggle navigation'>";
+	resultado += "		<span class='navbar-toggler-icon'></span>";
+	resultado += "	</button>";
+	resultado += "	<div class='collapse navbar-collapse' style='width:100%;' id='navbarNav'>";
+	resultado += "		<ul class='navbar-nav me-auto mb-2 mb-lg-0' style='width:1510px;'>";
+	resultado += "			<li class='nav-item' style='width:7%;'></li>";
+	resultado += "			<li class='nav-item' style='width:35%;text-align:center;font-weight:bold;padding-top:5px;'><div id='login'></div></li>";
+	resultado += "			<li class='nav-item' style='width:16%;text-align:center;'>";
+	resultado += "				<div class='nav-link active' style='color:#FFFFFF;font-size:20px;font-weight:bold;text-align:center;padding:10px 0px 10px 0px;'>Minha Estante</div>";
+	resultado += "			</li>";
+	resultado += "			{2}";
+	resultado += "			<li class='nav-item' style='width:5%;text-align:center;'>{1}</li>";
+	resultado += "		</ul>";
+	resultado += "	</div>";
+	resultado += "</div>";
+	
+	resultado = resultado.replace("{1}", v1);
+	resultado = resultado.replace("{2}", v2);
+	
+	$("nav").html(resultado);
+}
+
 async function getUsuario()
 {
 	//debugger;
@@ -321,7 +400,10 @@ function mock()
 
 $(document).ready(function ()
 {
-	getNav();
+	if (localStorage.getItem('token_usuario') == null)
+		getNavOut();
+	else
+		getNavIn();
 
 	$('#goToDados').click(function (e)
 	{
