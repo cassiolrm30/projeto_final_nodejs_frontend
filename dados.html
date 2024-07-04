@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Minha Estante de Livros</title>
+		<link
+		href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+		rel="stylesheet"
+		integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+		crossorigin="anonymous"/>
+		<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+		crossorigin="anonymous"></script>
+		<script
+		src="https://code.jquery.com/jquery-3.7.1.min.js"
+		integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+		crossorigin="anonymous"></script>
+		<script src="js/custom.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+		<style>
+			body { font-family: Arial; }
+			fieldset 	  	{ border:2px solid #000000; border-radius:7px; font-size:14px; color:#000000; padding:1px 0px 5px 1px; }
+			legend 			{ background-color:#FFFFFF; font-size:17px; font-weight:bold; text-align:left; padding:0px 0px 10px 10px; margin:-15px 0px 0px 10px; width:167px; }
+
+			.borda_fieldset { padding:30px 5px 5px 5px; float:left; height:140px; }
+
+			label 			{ font-weight:bold; color:#000000; }
+
+			.conteudos 		  { width:100%; overflow:hidden; height:70%; padding-top:40px; padding-left:0px; border-bottom:1px solid #000000; border-radius: 0px 0px 7px 7px; }
+			.conteudos #header   { width:100%; border: overflow:hidden; cursor:pointer; }
+			.conteudos #content  { width:100%; border: solid 1px; overflow:hidden; height:100%; }
+			.conteudos .abas 	  { display:inline; }
+			.conteudos .abas li  { float:left; }
+			.aba   				  { width:210px; height:40px; border:solid 1px; border-radius:5px 5px 0 0; text-align:center; padding-top:7px; background-color:#FFFFFF; font-size:14px; font-weight:bold; float:left; }
+			.ativa 				  { width:210px; height:40px; border:solid 1px; border-radius:5px 5px 0 0; text-align:center; padding-top:7px; background-color:#AAAAAA; }
+			.ativa span, .selected span { color:#FFFFFF; }
+			.conteudos #content  { background-color:#AAAAAA; }
+			.conteudos .conteudo { width:100%; background-color:#AAAAAA; display:none; height:100%; color:#FFFFFF; padding:20px; }
+
+			table 			{ border-collapse:collapse; width:100%; }
+			th 				{ border:1px solid #000000; font-size:13px; padding:5px; color:#FFFFFF; background-color:#000000; font-weight:bold; }
+			td 				{ border:1px solid #000000; font-size:13px; padding:5px; color:#000000; background-color:#FFFFFF; }
+		</style>
+	</head>
+	<body>
+		<!-- Navbar -->
+		<nav class="navbar navbar-expand-lg bg-body-tertiary"></nav>
+
+		<section>
+			<div class="container">
+				<div id="naoautenticado" class="row">
+					<div class="col text-center"><h1>Usuário não está autenticado</h1></div>
+				</div>
+				<div id="autenticado" style="height:620px;width:1290px;">
+					<div class="borda_fieldset">
+						<fieldset>
+							<legend>Dados do Usuário:</legend>
+							<div class="container mt-4" style="width:500px;">
+								<div class="row">
+									<div class="col-2" style="font-weight:bold;padding:1px 0px 1px 20px;">ID:</div>
+									<div class="col-10" style="padding:1px 0px 1px 0px;"><span id="_id"></span></div>
+								</div>
+								<div class="row">
+									<div class="col-2" style="font-weight:bold;padding:1px 0px 1px 20px;">Nome:</div>
+									<div class="col-10" style="padding:1px 0px 1px 0px;"><span id="name"></span></div>
+								</div>
+								<div class="row">
+									<div class="col-2" style="font-weight:bold;padding:1px 0px 1px 20px;">E-mail:</div>
+									<div class="col-10" style="padding:1px 0px 1px 0px;"><span id="email"></span></div>
+								</div>
+							</div>
+						</fieldset>
+					</div>
+					<div class="conteudos"></div>
+				</div>
+			</div>
+		</section>
+
+		<script>
+			var usuarios = [];
+			var livros = [];
+			var cores_fundo = ["#666666", "#BCBCBC"];
+			var autenticado = false;
+
+			function DefinirDIVs()
+			{
+				let resultado = "";
+				resultado += "<div id='header'>";
+				resultado += "    <ul class='abas' type='none'>";
+				resultado += "		<li>";
+				resultado += "			<div class='aba' id='aba1' style='background-color:" + cores_fundo[0] + ";' onclick='TrocarTela(this);'><span>Usuários</span></div>";
+				resultado += "			<div class='aba' id='aba2' style='background-color:" + cores_fundo[1] + ";' onclick='TrocarTela(this);'><span>Livros</span></div>";
+				resultado += "		</li>";
+				resultado += "	  </ul>";
+				resultado += "</div>";
+				resultado += "<div id='content'>";
+				resultado += "	<div class='conteudo' style='background-color:" + cores_fundo[0] + ";' id='divOpcao1'></div>";
+				resultado += "	<div class='conteudo' style='background-color:" + cores_fundo[1] + ";' id='divOpcao2'></div>";
+				resultado += "</div>";
+				$(".conteudos").html(resultado);
+			}
+
+			function CRUDsPorModulo(opcao)
+			{
+				const modulo = opcao == 1 ? "usuarios" : "livros";
+				const listagem = Listar(modulo);
+
+				let resultado = "";
+				resultado += "<div style='float:left;width:47%;'>";
+				resultado += "	<table>";
+				resultado += "		<thead>";
+				resultado += "			<tr>";
+				resultado += "				<th>Nome</th>";
+				resultado += "				<th style='text-align:center;' colspan='2'>Ações</th>";
+				resultado += "			</tr>";
+				resultado += "		</thead>";
+				resultado += "		<tbody id='myTable'>";
+				for (let i = 0; i < listagem.length; i++)
+				{
+					const _id = listagem[i]._id;
+					const cor_fundo = (i % 2 == 0) ? "#FFFFFF" : "#DDDDDD";
+					resultado += "	<tr>";
+					resultado += "		<td style='background-color:"+cor_fundo+";'>" + listagem[i].name + "</td>";
+					resultado += "		<td style='background-color:"+cor_fundo+";text-align:center;width:7%;'><a href='javascript:Editar(\"" + modulo + "\", \"" + _id + "\");'><img src='imagens/icone_editar.jpg' style='height:13.25px;width:13px;' /></a></td>";
+					resultado += "		<td style='background-color:"+cor_fundo+";text-align:center;width:7%;'><a href='javascript:Excluir(\"" + modulo + "\", \"" + _id + "\");ExibirTelas();'><img src='imagens/icone_excluir.jpg' style='height:13.25px;width:13px;' /></a></td>";
+					resultado += "	</tr>";
+				}
+				resultado += "		</tbody>";
+				resultado += "		<tfoot>";
+				resultado += "			<tr style='background-color:#000000;'>";
+				resultado += "				<th style='text-align:center;height:30px;' colspan='3'></th>";
+				resultado += "			</tr>";
+				resultado += "		</tfoot>";
+				resultado += "	</table>";
+				resultado += "</div>";
+				resultado += "<div style='float:left; width:6%;'>&nbsp;</div>";
+				resultado += "<div style='float:left; width:43%;'>";
+				resultado += "	<form method='post'>";
+				resultado += "		<input type='hidden' id='hidID'>";
+				resultado += "			<fieldset style='background-color:#FFFFFF;height:250px;padding:20px;'>";
+				resultado += "				<table cellpadding='0' cellspacing='0'>";
+				resultado += "					<tr><td colspan='2' style='height:15px;text-align:center;color:#FFFFFF;background-color:#000000;font-weight:bold;'>Cadastro</td></tr>";
+				if (modulo == "usuarios")
+				{
+					resultado += "				<tr>";
+					resultado += "					<td style='background-color:#DDDDDD;'><label style='font-weight:bold;'>Nome</label></td>";
+					resultado += "					<td style='background-color:#DDDDDD;'><input type='text' id='txtName' name='txtName' style='width:95%;' /></td>";
+					resultado += "				</tr>";
+					resultado += "				<tr>";
+					resultado += "					<td style='background-color:#DDDDDD;'><label style='font-weight:bold;'>E-mail</label></td>";
+					resultado += "					<td style='background-color:#DDDDDD;'><input type='text' id='txtEmail' name='txtEmail' style='width:95%;' /></td>";
+					resultado += "				</tr>";
+					resultado += "				<tr>";
+					resultado += "					<td style='background-color:#DDDDDD;'><label style='font-weight:bold;'>Senha</label></td>";
+					resultado += "					<td style='background-color:#DDDDDD;'><input type='password' id='txtPassword' name='txtPassword' style='width:95%;' /></td>";
+					resultado += "				</tr>";
+				}
+				else
+				{
+					resultado += "				<tr>";
+					resultado += "					<td style='background-color:#DDDDDD;'><label style='font-weight:bold;'>Nome</label></td>";
+					resultado += "					<td style='background-color:#DDDDDD;'><input type='text' id='txtTitle' name='txtTitle' style='width:95%;' /></td>";
+					resultado += "				</tr>";
+					resultado += "				<tr>";
+					resultado += "					<td style='background-color:#DDDDDD;'><label style='font-weight:bold;'>Capa</label></td>";
+					resultado += "					<td style='background-color:#DDDDDD;'><input type='text' id='txtCape' name='txtCape' style='width:95%;' onKeyPress=\"return(formatarDecimal(this,'22','.',',',event));\" /></td>";
+					resultado += "				</tr>";
+				}
+				resultado += "					<tr>";
+				resultado += "						<td style='background-color:#DDDDDD;height:15px;' colspan='2'>";
+				resultado += "							<center>";
+				resultado += "							<div style='width:50%;padding-right:5px;text-align:right;float:left;'><button class='btn btn-primary' style='width:100px;' id='doLogin' onclick='salvarDado(\"" + modulo + "\");'>Salvar</button></div>";
+				resultado += "							<div style='width:50%;padding-left:5px;'><button class='btn btn-primary' style='width:100px;' id='doLogin' onclick='CancelarDado(\"" + modulo + "\");'>Cancelar</button></div>";
+				resultado += "							</center>";
+				resultado += "						</td>";
+				resultado += "					</tr>";
+				resultado += "				</table>";
+				resultado += "			</fieldset>";
+				resultado += "	</form>";
+				resultado += "</div>";
+			
+				$("#divOpcao" + opcao).html(resultado);
+			}
+
+			function ExibirTelas()
+			{
+				//debugger;
+				DefinirDIVs();
+				$("#divOpcao1").html(CRUDsPorModulo(1));
+				$("#divOpcao2").html(CRUDsPorModulo(2));
+				$("#content div:nth-child(1)").show();
+				$(".abas li div:nth-child(1)").addClass("selected");
+				$(".conteudos").css("border-bottom", "1px solid #000000");
+			}
+
+			function TrocarTela(aba)
+			{
+				//debugger;
+				if (usuarios.length > 0)
+				{
+					indice = parseInt($(aba).prop("id").replace("aba", ""));
+					$(".aba").removeClass("selected");
+					$(aba).addClass("selected");
+					$("#content div").hide();
+					$("#content div:nth-child("+indice+")").show();
+					$("#aba1").css("background-color", cores_fundo[0]);
+					$("#aba2").css("background-color", cores_fundo[1]);
+					$("#divOpcao1").css("background-color", cores_fundo[0]);
+					$("#divOpcao2").css("background-color", cores_fundo[1]);
+					$("#divOpcao1").html(CRUDsPorModulo(1));
+					$("#divOpcao2").html(CRUDsPorModulo(2));
+				}
+			}
+
+			$(document).ready(async function ()
+			{
+				const usuario = await getUsuario();
+				let indice = 0;
+
+				$(".conteudos").css("border-bottom", "1px solid transparent");
+
+				if (!usuario)
+				{
+					$('#naoautenticado').show();
+					$('#autenticado').hide();
+				}
+				else
+				{
+					$('#naoautenticado').hide();
+					$('#autenticado').show();
+
+					$('#_id').html(usuario._id);
+					$('#name').html(usuario.name);
+					$('#email').html(usuario.email);
+					autenticado = true;
+				}
+
+				$('#conteudos1').click(function (e)
+				{
+					if (autenticado)
+						ExibirTelas();
+				});
+
+				$('#doLogout').click(function (e)
+				{
+					e.preventDefault();
+					doLogout();
+				});
+			});
+		</script>
+  </body>
+</html>
